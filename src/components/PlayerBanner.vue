@@ -6,28 +6,28 @@
       </div>
       <div class="player-details-container col-8 col-lg-10">
         <div class="player-name-container row">
-          <span class="player-name">{{ $parent.playerInfo["fullName"] }}</span>
+          <span class="player-name">{{ $parent.playersData["fullName"] }}</span>
         </div>
         <div class="player-org-info-container row">
           <span class="player-contract-info">
-            {{ $parent.playerInfo["orgAbbr"] }} ({{
-              timeStr($parent.playerInfo["serviceTime"])
+            {{ $parent.playersData["orgAbbr"] }} ({{
+              timeStr($parent.playersData["serviceTime"])
             }})
           </span>
         </div>
         <div class="player-bio-info-container row">
           <div class="player-bio-col col-4">
-            <span>{{ $parent.playerInfo["position"] }}</span>
+            <span>{{ $parent.playersData["position"] }}</span>
           </div>
           <div class="player-bio-col col-4">
             <span
               >Age:{{
-                Math.floor(parseFloat($parent.playerInfo["ageDecimal"]))
+                Math.floor(parseFloat($parent.playersData["ageDecimal"]))
               }}</span
             >
           </div>
           <div class="player-bio-col col-4">
-            <span>Throws:{{ $parent.playerInfo["throws"] }}</span>
+            <span>Throws:{{ $parent.playersData["throws"] }}</span>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default {
     imgUrl: function () {
       return (
         "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/" +
-        this.$parent.playerInfo["imgId"] +
+        this.$parent.playersData["imgId"] +
         "/headshot/67/current"
       );
     },

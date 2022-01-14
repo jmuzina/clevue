@@ -9,27 +9,45 @@
           v-bind:index="index"
           v-bind:key="item.playerId"
         >
-          <Player :playerId="item.playerId" />
+          <Player
+            :playerId="item.playerId"
+            @player-selected="player_selected($event)"
+          />
         </div>
       </div>
-      <div class="pitchData col-md-6"></div>
+      <div class="pitchData col-md-6">
+        <div class="row">
+          <Panel title="All Pitches">
+            <PitchPlot />
+          </Panel>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Player from "./components/Player";
+import Panel from "./components/layout/Panel.vue";
+import PitchPlot from "./components/plots/PitchPlot.vue";
 
 export default {
   data() {
     return {
       playerRoster: this.getAllPlayers(),
       gotPlayerRoster: false,
+      selectedPlayerData: {},
+
+      player_selected: function (selected) {
+        this.selectedPlayerData = selected;
+      },
     };
   },
   name: "App",
   components: {
     Player,
+    Panel,
+    PitchPlot,
   },
   methods: {
     getAllPlayers() {
@@ -52,6 +70,7 @@ export default {
             else return 0;
           });
           this.playerRoster = response.players;
+          this.selectedPlayerData = response.players[0];
           return response.players;
         })
         .catch((err) => {
