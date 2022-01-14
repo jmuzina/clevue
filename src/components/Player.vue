@@ -1,10 +1,12 @@
 <template>
-  <div class="player-page">
-    <PlayerBanner />
-    <div>
-      <Panel title="All Pitches">
-        <PitchPlot />
-      </Panel>
+  <div class="player-card">
+    <div class="player-details" v-if="gotPlayerData == true">
+      <PlayerBanner />
+      <div class="pitchPlot">
+        <Panel title="All Pitches">
+          <PitchPlot />
+        </Panel>
+      </div>
     </div>
   </div>
 </template>
@@ -20,8 +22,34 @@ export default {
   },
   data() {
     return {
-      playerInfo: {},
+      playerInfo: this.getPlayerData(),
+      gotPlayerData: false,
     };
+  },
+  methods: {
+    getPlayerData() {
+      this.gotPlayerData = false;
+      fetch(
+        "https://cle-fe-challenge-services.vercel.app/api/players?playerId=105859",
+        {
+          method: "GET",
+        }
+      )
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((response) => {
+          console.log(response.playerDetail);
+          this.gotPlayerData = true;
+          this.playerInfo = response.playerDetail;
+          return response.playerDetail;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
 };
 </script>

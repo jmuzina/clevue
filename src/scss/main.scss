@@ -8,3 +8,59 @@ body {
   height: 100%;
   margin: 0;
 }
+
+.player-card {
+  max-width:min-content;
+  box-shadow: rgba(52, 75, 107,0.7) 0 0 7px;
+  background-color: gray;
+  max-width: min-content;
+  padding: 5px 10px 10px 10px;
+  margin: 10px;
+}
+
+.player-name {
+  margin: 3px 0px 5px 0px !important;
+  text-align: center;
+}
+
+.player-contract-info {
+  display: flex;
+  flex-flow: row wrap;
+  align-self: center;
+  margin: 2px 0px 9px 0px !important;
+}
+
+.player-card:hover  {
+	box-shadow: #1faff1 0 0 19px !important;
+	transform:scale(1.02);
+}
+
+.player-banner {
+  max-height: min-content;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+
+.player-banner img {
+  align-self:center;
+  max-width: 10vw;
+  margin: 0px 0px 5px 0px !important;
+}
+
+.player-info {
+  display:flex;
+  flex-flow: column nowrap;
+  width:70%;
+  align-self:center;
+}
+
+.player-info tr {
+  display:flex;
+  flex-flow:row nowrap;
+  justify-content:space-between;
+}
+
+.pitchPlot {
+  
+}
