@@ -1,26 +1,37 @@
 <template>
-  <div class="player-banner">
-    <h2 class="player-name">{{ $parent.playerInfo["fullName"] }}</h2>
-    <h4 class="player-contract-info">
-      {{ $parent.playerInfo["orgAbbr"] }} ({{
-        timeStr($parent.playerInfo["serviceTime"])
-      }})
-    </h4>
-    <img :src="imgUrl" alt="Player Image" />
-    <table class="player-info">
-      <tr>
-        <th>Age</th>
-        <th>{{ Math.floor(parseFloat($parent.playerInfo["ageDecimal"])) }}</th>
-      </tr>
-      <tr>
-        <th>Position</th>
-        <th>{{ $parent.playerInfo["position"] }}</th>
-      </tr>
-      <tr>
-        <th>Throws</th>
-        <th>{{ $parent.playerInfo["throws"] }}</th>
-      </tr>
-    </table>
+  <div class="container-fluid">
+    <div class="player-primary row">
+      <div class="player-photo-container col-4 col-lg-2">
+        <img class="player-image" :src="imgUrl" alt="Player Image" />
+      </div>
+      <div class="player-details-container col-8 col-lg-10">
+        <div class="player-name-container row">
+          <span class="player-name">{{ $parent.playerInfo["fullName"] }}</span>
+        </div>
+        <div class="player-org-info-container row">
+          <span class="player-contract-info">
+            {{ $parent.playerInfo["orgAbbr"] }} ({{
+              timeStr($parent.playerInfo["serviceTime"])
+            }})
+          </span>
+        </div>
+        <div class="player-bio-info-container row">
+          <div class="player-bio-col col-4">
+            <span>{{ $parent.playerInfo["position"] }}</span>
+          </div>
+          <div class="player-bio-col col-4">
+            <span
+              >Age:{{
+                Math.floor(parseFloat($parent.playerInfo["ageDecimal"]))
+              }}</span
+            >
+          </div>
+          <div class="player-bio-col col-4">
+            <span>Throws:{{ $parent.playerInfo["throws"] }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

@@ -1,16 +1,18 @@
 <template>
-  <div class="player-list" v-if="gotPlayerRoster == true" id="app">
-    <!--
-    <Player />
-    -->
-    <div
-      class="player-container"
-      v-for="(item, index) in playerRoster"
-      v-bind:item="item"
-      v-bind:index="index"
-      v-bind:key="item.playerId"
-    >
-      <Player :playerId="item.playerId" />
+  <div class="container-fluid" v-if="gotPlayerRoster == true" id="app">
+    <div class="row">
+      <div class="player-list col-md-6" v-if="gotPlayerRoster == true">
+        <div
+          class="player-container"
+          v-for="(item, index) in playerRoster"
+          v-bind:item="item"
+          v-bind:index="index"
+          v-bind:key="item.playerId"
+        >
+          <Player :playerId="item.playerId" />
+        </div>
+      </div>
+      <div class="pitchData col-md-6"></div>
     </div>
   </div>
 </template>
