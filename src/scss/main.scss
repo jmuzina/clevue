@@ -55,7 +55,7 @@ $playerBioDataLineHeight_mobile: 1.3;
 
 .selectedPlayer {
   box-shadow: rgba(241, 241, 6, 0.5) 0 0 7px !important;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .player-details {
@@ -129,4 +129,11 @@ $playerBioDataLineHeight_mobile: 1.3;
 
 .pitchPlot {
   
+}
+
+circle {
+  //width:0; height:0;
+    border: 180px solid red;
+    border-top-left-radius: 180px;
+    border-top-right-radius: 180px;
 }

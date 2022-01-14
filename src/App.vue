@@ -18,8 +18,13 @@
       <div class="pitchData col-md-6">
         <div class="row">
           <Panel title="All Pitches">
-            <PitchPlot />
+            <PitchPlot :pitches="selectedPlayerData.pitchData" />
           </Panel>
+          <!--
+            const filtered = employees.filter(function (emp) {
+              return emp.department === 'marketing'
+            });
+          -->
         </div>
       </div>
     </div>
@@ -37,9 +42,24 @@ export default {
       playerRoster: this.getAllPlayers(),
       gotPlayerRoster: false,
       selectedPlayerData: {},
+      //pitchTypes: {},
 
       player_selected: function (selected) {
         this.selectedPlayerData = selected;
+        for (const k in this.selectedPlayerData.pitchData) {
+          this.selectedPlayerData.pitchData[k].isVisible = true;
+          this.selectedPlayerData.pitchData[k].radius = 0.03;
+          //this.selectedPlayerData.pitchData[k].hidden = false;
+        }
+        console.log(this.selectedPlayerData.pitchData);
+        /*
+        for (const key in this.selectedPlayerData.pitchData) {
+          if (!(this.selectedPlayerData.pitchData[key]["pitchType"] in this.pitchTypes)) {
+            this.pitchTypes[this.selectedPlayerData.pitchData[key]["pitchType"]] = this.selectedPlayerData.pitchData[key]["pitchName"];
+            console.log("found new pitch type " + this.selectedPlayerData.pitchData[key]["pitchType"], this.selectedPlayerData.pitchData[key]["pitchName"]);
+          }
+        }
+        */
       },
     };
   },
