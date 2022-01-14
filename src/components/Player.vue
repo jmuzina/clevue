@@ -1,12 +1,14 @@
 <template>
-  <div class="player-card">
-    <div class="player-details" v-if="gotPlayerData == true">
+  <div v-if="gotPlayerData == true" class="player-card">
+    <div class="player-details">
       <PlayerBanner />
+      <!--
       <div class="pitchPlot">
         <Panel title="All Pitches">
           <PitchPlot />
         </Panel>
       </div>
+      -->
     </div>
   </div>
 </template>
@@ -15,6 +17,7 @@ import PlayerBanner from "./PlayerBanner.vue";
 import Panel from "./layout/Panel.vue";
 import PitchPlot from "./plots/PitchPlot.vue";
 export default {
+  props: ["playerId"],
   components: {
     PlayerBanner,
     Panel,
@@ -30,7 +33,8 @@ export default {
     getPlayerData() {
       this.gotPlayerData = false;
       fetch(
-        "https://cle-fe-challenge-services.vercel.app/api/players?playerId=105859",
+        "https://cle-fe-challenge-services.vercel.app/api/players?playerId=" +
+          this.playerId,
         {
           method: "GET",
         }
@@ -41,7 +45,6 @@ export default {
           }
         })
         .then((response) => {
-          console.log(response.playerDetail);
           this.gotPlayerData = true;
           this.playerInfo = response.playerDetail;
           return response.playerDetail;
