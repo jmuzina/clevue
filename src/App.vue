@@ -53,12 +53,24 @@ export default {
 
       pitchTypes: {},
 
+      pitchTypeColors: {
+        Fastball: "blue",
+        Curveball: "red",
+        Slider: "green",
+        Changeup: "purple",
+        Sinker: "teal",
+        Cutter: "orange",
+      },
+
       player_selected: function (selected) {
         this.selectedPlayerData = selected;
         this.pitchTypes = {};
         for (const k in this.selectedPlayerData.pitchData) {
           this.selectedPlayerData.pitchData[k].isVisible = true;
-          this.selectedPlayerData.pitchData[k].radius = 0.03;
+          this.selectedPlayerData.pitchData[k].radius = 0.04;
+          this.selectedPlayerData.pitchData[k].fill = this.pitchColor(
+            this.selectedPlayerData.pitchData[k]
+          );
           if (
             this.pitchTypes[this.selectedPlayerData.pitchData[k].pitchName] ==
             null
@@ -93,7 +105,7 @@ export default {
       this.playerRoster.sort(function (a, b) {
         if (a[k] < b[k]) return -1;
         else if (a[k] > b[k]) return 1;
-        else return 1;
+        else return 0;
       });
     },
     getAllPlayers() {
@@ -117,6 +129,12 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    pitchColor(pitch) {
+      if (pitch.pitchName in this.pitchTypeColors)
+        return this.pitchTypeColors[pitch.pitchName];
+
+      return "black";
     },
   },
 };

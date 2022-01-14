@@ -98,10 +98,6 @@ import { selectableMixin } from "../../utility/selectable";
 export default {
   mixins: [selectableMixin],
   props: {
-    width: {
-      default: "200px",
-      type: String,
-    },
     backgroundColor: {
       default: "#DFDFDF",
       type: String,

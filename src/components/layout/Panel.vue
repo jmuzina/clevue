@@ -42,12 +42,11 @@ export default {
 .panel {
   display: inline-flex;
   flex-direction: column;
-  min-width: 100px;
   border: 1px solid $black;
   border-radius: $rounded;
 
-  max-height: 100%;
-  max-width: 100%;
+  max-height: 50%;
+  max-width: 50%;
   background-color: $white;
 
   /* box-shadow: $shadow-lg; */
