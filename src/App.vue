@@ -20,11 +20,16 @@
           <Panel title="All Pitches">
             <PitchPlot :pitches="selectedPlayerData.pitchData" />
           </Panel>
-          <!--
-            const filtered = employees.filter(function (emp) {
-              return emp.department === 'marketing'
-            });
-          -->
+
+          <Panel
+            v-for="(item, index) in pitchTypes"
+            v-bind:item="item"
+            v-bind:index="index"
+            v-bind:key="item.pitchType"
+            :title="index"
+          >
+            <PitchPlot :pitches="Object.values(item)" />
+          </Panel>
         </div>
       </div>
     </div>
@@ -42,24 +47,32 @@ export default {
       playerRoster: this.getAllPlayers(),
       gotPlayerRoster: false,
       selectedPlayerData: {},
-      //pitchTypes: {},
+      selectedPitchType: "Fastball",
+      sortAscending: true,
+      sortKey: "fullName",
+
+      pitchTypes: {},
 
       player_selected: function (selected) {
         this.selectedPlayerData = selected;
+        this.pitchTypes = {};
         for (const k in this.selectedPlayerData.pitchData) {
           this.selectedPlayerData.pitchData[k].isVisible = true;
           this.selectedPlayerData.pitchData[k].radius = 0.03;
-          //this.selectedPlayerData.pitchData[k].hidden = false;
+          if (
+            this.pitchTypes[this.selectedPlayerData.pitchData[k].pitchName] ==
+            null
+          )
+            this.pitchTypes[
+              this.selectedPlayerData.pitchData[k].pitchName
+            ] = {};
+
+          this.pitchTypes[this.selectedPlayerData.pitchData[k].pitchName][
+            this.selectedPlayerData.pitchData[k].pitchNum
+          ] = this.selectedPlayerData.pitchData[k];
         }
-        console.log(this.selectedPlayerData.pitchData);
-        /*
-        for (const key in this.selectedPlayerData.pitchData) {
-          if (!(this.selectedPlayerData.pitchData[key]["pitchType"] in this.pitchTypes)) {
-            this.pitchTypes[this.selectedPlayerData.pitchData[key]["pitchType"]] = this.selectedPlayerData.pitchData[key]["pitchName"];
-            console.log("found new pitch type " + this.selectedPlayerData.pitchData[key]["pitchType"], this.selectedPlayerData.pitchData[key]["pitchName"]);
-          }
-        }
-        */
+        //console.log(this.pitchTypes);
+        //console.log(this.selectedPlayerData.pitchData);
       },
     };
   },
@@ -70,6 +83,19 @@ export default {
     PitchPlot,
   },
   methods: {
+    getFilteredPitches(filterPitch) {
+      if (this.selectedPlayerData.pitchData == null) return {};
+      return this.selectedPlayerData.pitchData.filter(function (pitch) {
+        return pitch.pitchType == filterPitch;
+      });
+    },
+    sortPlayers(k) {
+      this.playerRoster.sort(function (a, b) {
+        if (a[k] < b[k]) return -1;
+        else if (a[k] > b[k]) return 1;
+        else return 1;
+      });
+    },
     getAllPlayers() {
       this.gotPlayerRoster = false;
       fetch("https://cle-fe-challenge-services.vercel.app/api/players", {
@@ -82,16 +108,11 @@ export default {
         })
         .then((response) => {
           this.gotPlayerRoster = true;
-          response.players.sort(function (a, b) {
-            const nameA = a.fullName.toUpperCase();
-            const nameB = b.fullName.toUpperCase();
-            if (nameA < nameB) return -1;
-            else if (nameA > nameB) return 1;
-            else return 0;
-          });
           this.playerRoster = response.players;
-          this.selectedPlayerData = response.players[0];
-          return response.players;
+          this.sortPlayers(this.sortKey);
+          //this.selectedPlayerData = this.playerRoster[0];
+
+          return this.playerRoster;
         })
         .catch((err) => {
           console.log(err);
