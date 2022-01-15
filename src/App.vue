@@ -24,7 +24,7 @@
             v-bind:item="pitches"
             v-bind:index="pitchType"
             v-bind:key="pitchType"
-            :title="pitchType"
+            :title="getPitchTitle(pitchType)"
           >
             <PitchPlot :pitches="Object.values(pitches)" />
           </Panel>
@@ -58,6 +58,22 @@ export default {
         Changeup: "purple",
         Sinker: "teal",
         Cutter: "orange",
+      },
+
+      getPitchTitle: function (pitchType) {
+        let numPitches = this.playerPitchData[this.selectedPlayerData.playerId][
+          pitchType
+        ].length;
+        let numTotalPitches = this.playerPitchData[
+          this.selectedPlayerData.playerId
+        ]["All Pitches"].length;
+        let result = pitchType + " (" + numPitches + ")";
+
+        if (numPitches !== numTotalPitches) {
+          const percentage = ((numPitches / numTotalPitches) * 100).toFixed(1);
+          result += " (" + percentage + "%)";
+        }
+        return result;
       },
 
       player_selected: function (selected) {
