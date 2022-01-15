@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid" v-if="gotPlayerRoster == true" id="app">
     <div class="row">
-      <div class="player-list col-md-6" v-if="gotPlayerRoster == true">
+      <div class="player-list col-lg-6" v-if="gotPlayerRoster == true">
         <div
           class="player-container"
           v-for="(item, index) in playerRoster"
@@ -15,8 +15,8 @@
           />
         </div>
       </div>
-      <div class="pitchData col-md-6">
-        <div class="row">
+      <div class="pitchData col-lg-6">
+        <div class="pitchPlots row">
           <Panel
             v-for="(pitches, pitchType) in playerPitchData[
               selectedPlayerData.playerId

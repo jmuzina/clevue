@@ -16,6 +16,10 @@ $playerBioDataFontSize_mobile: 14px;
 $playerBioDataLineHeight_base: 1.5;
 $playerBioDataLineHeight_mobile: 1.3;
 
+#app {
+  margin: 10px 0px 0px 0px;
+}
+
 .player-container {
   width:50%;
 }
@@ -131,6 +135,13 @@ $playerBioDataLineHeight_mobile: 1.3;
   display: flex;
   flex-flow: row wrap;
   justify-content:center;
+}
+
+.pitchPlots {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
 }
 
 circle {

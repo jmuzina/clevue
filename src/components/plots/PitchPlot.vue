@@ -109,15 +109,15 @@ export default {
   },
 
   data() {
-    const min = 4 / 12;
-    const max = 56 / 12;
+    const min = 0;
+    const max = 5;
     const coordSystem = {
       minX: 0 - (max - min) / 2,
       maxX: 0 + (max - min) / 2,
-      minY: min,
-      maxY: max,
-      width: max - min,
-      height: max - min,
+      minY: 0,
+      maxY: 4.3,
+      width: (max - min) * 1,
+      height: (max - min) * 0.77,
     };
 
     return {
