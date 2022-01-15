@@ -36,7 +36,7 @@
             ]"
             :cx="p.x"
             :cy="scaleY(p.y)"
-            :r="p.radius"
+            :r="isStrike(p) ? p.radius : p.radius / 2"
             :fill="p.fill"
             :fill-opacity="p.isSelected ? 1 : p.fillOpacity"
             :stroke="p.isSelected ? p.selectedStroke : p.stroke"
@@ -141,6 +141,20 @@ export default {
   methods: {
     scaleY(v) {
       return this.coordSystem.maxY - v + this.coordSystem.minY;
+    },
+    isStrike(pitch) {
+      const lowerBoundX = this.strikezoneCoords.x;
+      const upperBoundX = this.strikezoneCoords.x + this.strikezoneCoords.width;
+      const lowerBoundY = this.strikezoneCoords.y * 0.5;
+      const upperBoundY =
+        (this.strikezoneCoords.y + this.strikezoneCoords.height) * 0.67;
+
+      if (pitch.x >= upperBoundX) return false;
+      if (pitch.x <= lowerBoundX) return false;
+      if (pitch.y >= upperBoundY) return false;
+      if (pitch.y <= lowerBoundY) return false;
+
+      return true;
     },
   },
 };
