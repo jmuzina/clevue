@@ -30,7 +30,14 @@ We also want to show pitch plots for all of the pitcher's pitches as well as ind
 
 **Endpoint documentation is at the end of this document**
 
-### PART II
+finishing touches needed:
+display strike percentage for each pitch type
+pretty styling.
+search functionality.
+various sorting types
+player list should scroll separately from the pitch plots, which are static
+
+### PART II - COMPLETE
 
 Now that we have a pitcher assessment page, we need an intuitive way for users to load in other pitchers' data. The users will need access to all of the available pitchers.
 
