@@ -45,8 +45,8 @@ export default {
   border: 1px solid $black;
   border-radius: $rounded;
 
-  max-height: 33%;
-  max-width: 33%;
+  //max-height: 33%;
+  //max-width: 33%;
   background-color: $white;
 
   /* box-shadow: $shadow-lg; */

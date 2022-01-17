@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid" v-if="gotPlayerRoster == true" id="app">
     <div class="row">
-      <div class="player-list col-lg-6" v-if="gotPlayerRoster == true">
+      <div class="player-list col-lg-3" v-if="gotPlayerRoster == true">
         <div
           class="player-container"
           v-for="(item, index) in playerRoster"
@@ -15,20 +15,16 @@
           />
         </div>
       </div>
-      <div class="pitchData col-lg-6">
-        <div class="pitchPlots row">
-          <Panel
-            v-for="(pitches, pitchType) in playerPitchData[
-              selectedPlayerData.playerId
-            ]"
-            v-bind:item="pitches"
-            v-bind:index="pitchType"
-            v-bind:key="pitchType"
-            :title="getPitchTitle(pitchType)"
-          >
-            <PitchPlot :pitches="Object.values(pitches)" />
-          </Panel>
-        </div>
+
+      <div class="pitchData col-lg-9">
+        <PitchRow
+          v-for="(pitches, pitchType) in playerPitchData[
+            selectedPlayerData.playerId
+          ]"
+          v-bind:key="pitchType"
+          :title="getPitchTitle(pitchType)"
+          :pitches="Object.values(pitches)"
+        />
       </div>
     </div>
   </div>
@@ -38,6 +34,8 @@
 import Player from "./components/Player";
 import Panel from "./components/layout/Panel.vue";
 import PitchPlot from "./components/plots/PitchPlot.vue";
+import PitchTable from "./components/PitchTable.vue";
+import PitchRow from "./components/PitchRow.vue";
 
 export default {
   data() {
@@ -142,6 +140,7 @@ export default {
     Player,
     Panel,
     PitchPlot,
+    PitchRow,
   },
   methods: {
     getFilteredPitches(filterPitch) {
