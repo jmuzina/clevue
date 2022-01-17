@@ -2,21 +2,60 @@
   <table class="table table-striped table-bordered table-sm table-hover">
     <thead>
       <tr>
-        <th v-on:click="sort('gameDate')">Date</th>
-        <th v-on:click.prevent="sort('pitchNum')">#</th>
-        <th v-on:click.prevent="sort('pitchType')">Type</th>
-        <th v-on:click.prevent="sort('balls')">Balls</th>
-        <th v-on:click.prevent="sort('strikes')">Strikes</th>
-        <th v-on:click.prevent="sort('velo')">MPH</th>
-        <th v-on:click.prevent="sort('x')">X</th>
-        <th v-on:click.prevent="sort('y')">Y</th>
-        <th v-on:click.prevent="sort('cut')">Cut</th>
-        <th v-on:click.prevent="sort('rise')">Rise</th>
-        <th v-on:click.prevent="sort('swing')">Swing</th>
-        <th v-on:click.prevent="sort('miss')">Miss</th>
-        <th v-on:click.prevent="sort('inStrikeZone')">Strike</th>
-        <th v-on:click.prevent="sort('batterShortName')">Batter</th>
-        <th v-on:click.prevent="sort('result')">Result</th>
+        <th
+          v-on:click="sort('gameDate')"
+          v-html="'Date ' + sortArrow('gameDate')"
+        />
+        <th
+          v-on:click.prevent="sort('pitchNum')"
+          v-html="'# ' + sortArrow('pitchNum')"
+        />
+        <th
+          v-on:click.prevent="sort('pitchType')"
+          v-html="'Pitch ' + sortArrow('pitchType')"
+        />
+        <th
+          v-on:click.prevent="sort('balls')"
+          v-html="'Balls ' + sortArrow('balls')"
+        />
+        <th
+          v-on:click.prevent="sort('strikes')"
+          v-html="'Strikes ' + sortArrow('strikes')"
+        />
+        <th
+          v-on:click.prevent="sort('velo')"
+          v-html="'MPH ' + sortArrow('velo')"
+        />
+        <th v-on:click.prevent="sort('x')" v-html="'X ' + sortArrow('x')" />
+        <th v-on:click.prevent="sort('y')" v-html="'Y ' + sortArrow('y')" />
+        <th
+          v-on:click.prevent="sort('cut')"
+          v-html="'Cut ' + sortArrow('cut')"
+        />
+        <th
+          v-on:click.prevent="sort('rise')"
+          v-html="'Rise ' + sortArrow('rise')"
+        />
+        <th
+          v-on:click.prevent="sort('swing')"
+          v-html="'Swung ' + sortArrow('swing')"
+        />
+        <th
+          v-on:click.prevent="sort('miss')"
+          v-html="'Missed ' + sortArrow('miss')"
+        />
+        <th
+          v-on:click.prevent="sort('inStrikeZone')"
+          v-html="'Strike ' + sortArrow('inStrikeZone')"
+        />
+        <th
+          v-on:click.prevent="sort('batterShortName')"
+          v-html="'Batter ' + sortArrow('batterShortName')"
+        />
+        <th
+          v-on:click.prevent="sort('result')"
+          v-html="'Result ' + sortArrow('result')"
+        />
       </tr>
     </thead>
     <tbody>
@@ -59,6 +98,11 @@ export default {
       pitchesData: this.pitches,
       selectedSortingMetric: "gameDate",
       invertSort: false,
+      sortArrow: function (metric) {
+        if (metric === this.selectedSortingMetric) {
+          return "&#" + (this.invertSort ? "8593" : "8595") + ";";
+        } else return "";
+      },
     };
   },
   computed: {},
