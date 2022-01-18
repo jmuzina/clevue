@@ -2,11 +2,21 @@
   <div class="row">
     <div class="pitchPlotContainer col-lg-4">
       <Panel :title="title">
-        <PitchPlot :pitches="pitches" />
+        <PitchPlot
+          v-on:hovered-pitch="hoveredPitch($event)"
+          v-on:stop-hovered-pitch="stopHoveredPitch($event)"
+          :pitches="pitchData"
+          :selectedPitch="currentSelectedPitch"
+        />
       </Panel>
     </div>
     <div class="pitchTableContainer col-lg-8">
-      <PitchTable :pitches="pitches" />
+      <PitchTable
+        v-on:hovered-pitch="hoveredPitch($event)"
+        v-on:stop-hovered-pitch="stopHoveredPitch($event)"
+        :pitches="pitchData"
+        :selectedPitch="currentSelectedPitch"
+      />
     </div>
   </div>
 </template>
@@ -32,10 +42,24 @@ export default {
     PitchTable,
   },
   data() {
-    return {};
+    return {
+      pitchData: this.pitches,
+      selectedPitch: "",
+    };
   },
-  computed: {},
-  methods: {},
+  computed: {
+    currentSelectedPitch: function () {
+      return this.selectedPitch;
+    },
+  },
+  methods: {
+    hoveredPitch: function (pitchId) {
+      this.selectedPitch = pitchId;
+    },
+    stopHoveredPitch: function (pitchId) {
+      this.selectedPitch = "";
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

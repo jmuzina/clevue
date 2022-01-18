@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid" v-if="gotPlayerRoster == true" id="app">
-    <div class="row">
+    <div class="main-row row">
       <div class="player-list col-lg-3" v-if="gotPlayerRoster == true">
         <div
           class="player-container"
@@ -12,19 +12,71 @@
           <Player
             :playerId="item.playerId"
             @player-selected="player_selected($event)"
+            data-toggle="modal"
+            data-target="#pitchDataModal"
           />
         </div>
       </div>
 
-      <div class="pitchData col-lg-9">
+      <div v-if="windowWidth > 992" class="pitchData col-lg-9">
+        <p v-if="pitchTypes.length == 0" class="select-player-hint">
+          Please select a player!
+        </p>
         <PitchRow
           v-for="(pitches, pitchType) in playerPitchData[
             selectedPlayerData.playerId
           ]"
           v-bind:key="pitchType"
           :title="getPitchTitle(pitchType)"
-          :pitches="Object.values(pitches)"
+          :pitches="pitches"
         />
+      </div>
+      <div v-else class="pitchModal">
+        <div
+          class="modal fade"
+          id="pitchDataModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="pitchDataModalTitle"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                  Pitch Statistics
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <PitchRow
+                  v-for="(pitches, pitchType) in playerPitchData[
+                    selectedPlayerData.playerId
+                  ]"
+                  v-bind:key="pitchType"
+                  :title="getPitchTitle(pitchType)"
+                  :pitches="pitches"
+                />
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -32,12 +84,22 @@
 
 <script>
 import Player from "./components/Player";
-import Panel from "./components/layout/Panel.vue";
-import PitchPlot from "./components/plots/PitchPlot.vue";
-import PitchTable from "./components/PitchTable.vue";
 import PitchRow from "./components/PitchRow.vue";
 
+function objLength(obj) {
+  let result = 0;
+  for (const k in obj) {
+    ++result;
+  }
+  return result;
+}
+
 export default {
+  mounted() {
+    window.onresize = () => {
+      this.windowWidth = window.innerWidth;
+    };
+  },
   data() {
     return {
       playerRoster: this.getAllPlayers(),
@@ -46,6 +108,7 @@ export default {
       selectedPlayerData: {},
       sortAscending: true,
       sortKey: "fullName",
+      windowWidth: window.innerWidth,
 
       pitchTypes: [],
 
@@ -59,12 +122,12 @@ export default {
       },
 
       getPitchTitle: function (pitchType) {
-        let numPitches = this.playerPitchData[this.selectedPlayerData.playerId][
-          pitchType
-        ].length;
-        let numTotalPitches = this.playerPitchData[
-          this.selectedPlayerData.playerId
-        ]["All Pitches"].length;
+        let numPitches = objLength(
+          this.playerPitchData[this.selectedPlayerData.playerId][pitchType]
+        );
+        let numTotalPitches = objLength(
+          this.playerPitchData[this.selectedPlayerData.playerId]["All Pitches"]
+        );
         let result = pitchType + " (" + numPitches + ")";
 
         if (numPitches !== numTotalPitches) {
@@ -80,30 +143,30 @@ export default {
         if (this.playerPitchData[pid] == null) {
           this.pitchTypes = [];
           this.playerPitchData[pid] = {
+            //"All Pitches": {},
             "All Pitches": [],
           };
           let pitchTypesList = {};
           for (const k in this.selectedPlayerData.pitchData) {
-            this.selectedPlayerData.pitchData[k].isVisible = true;
-            this.selectedPlayerData.pitchData[k].radius = 0.04;
-            this.selectedPlayerData.pitchData[k].fill = this.pitchColor(
-              this.selectedPlayerData.pitchData[k]
-            );
+            let pitch = this.selectedPlayerData.pitchData[k];
+            pitch.isVisible = true;
+            pitch.radius = 0.04;
+            pitch.fill = this.pitchColor(pitch);
+            pitch.pitchId =
+              pitch.gameId.toString() +
+              "_" +
+              pitch.pitcherId.toString() +
+              "_" +
+              pitch.pitchNum.toString();
 
-            if (
-              pitchTypesList[this.selectedPlayerData.pitchData[k].pitchName] ==
-              null
-            )
-              pitchTypesList[
-                this.selectedPlayerData.pitchData[k].pitchName
-              ] = [];
+            if (pitchTypesList[pitch.pitchName] == null)
+              pitchTypesList[pitch.pitchName] = [];
+            //pitchTypesList[pitch.pitchName] = {};
 
-            pitchTypesList[this.selectedPlayerData.pitchData[k].pitchName].push(
-              this.selectedPlayerData.pitchData[k]
-            );
-            this.playerPitchData[pid]["All Pitches"].push(
-              this.selectedPlayerData.pitchData[k]
-            );
+            pitchTypesList[pitch.pitchName].push(pitch);
+            //pitchTypesList[pitch.pitchName][pitch.pitchId] = pitch;
+            //this.playerPitchData[pid]["All Pitches"][pitch.pitchId] = pitch;
+            this.playerPitchData[pid]["All Pitches"].push(pitch);
           }
 
           let pitchKeys = Object.entries(pitchTypesList);
@@ -114,23 +177,14 @@ export default {
           });
 
           for (const i in pitchKeys) {
-            //console.log(pitchKeys);
             const pitchType = pitchKeys[i][0];
             const pitchList = pitchKeys[i][1];
 
             if (this.pitchTypes.indexOf(pitchType) === -1)
               this.pitchTypes.push(pitchKeys[i]);
             if (this.playerPitchData[pid][pitchType] == null)
-              this.playerPitchData[pid][pitchType] = Object.values(pitchList);
-
-            //console.log("pitch list for this player");
-            //console.log(pitchList);
+              this.playerPitchData[pid][pitchType] = pitchList;
           }
-          //console.log("full data");
-          //console.log(this.playerPitchData);
-          console.log("generated data for ", pid, this.playerPitchData[pid]);
-        } else {
-          console.log("already have data for ", pid, this.playerPitchData[pid]);
         }
       },
     };
@@ -138,15 +192,13 @@ export default {
   name: "App",
   components: {
     Player,
-    Panel,
-    PitchPlot,
     PitchRow,
   },
   methods: {
     getFilteredPitches(filterPitch) {
       if (this.selectedPlayerData.pitchData == null) return {};
       return this.selectedPlayerData.pitchData.filter(function (pitch) {
-        return pitch.pitchType == filterPitch;
+        return pitch.pitchType === filterPitch;
       });
     },
     sortPlayers(k) {

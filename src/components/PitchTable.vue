@@ -1,5 +1,8 @@
 <template>
-  <table class="table table-striped table-bordered table-sm table-hover">
+  <table
+    class="table table-striped table-bordered table-sm table-hover"
+    v-on:mouseleave="stopHoverRow(hoveredPitch)"
+  >
     <thead>
       <tr>
         <th
@@ -63,7 +66,10 @@
         v-for="(pitch, index) in pitchesData"
         v-bind:item="pitch"
         v-bind:index="index"
-        v-bind:key="pitchId(pitch)"
+        v-bind:key="pitch.pitchId"
+        v-on:mouseover="hoverRow(pitch)"
+        v-on:mouseleave="stopHoverRow(pitch)"
+        :class="{ 'pitch-row-hover': pitch.pitchId === hoveredPitch }"
       >
         <td>{{ pitch.gameDate.toString().substring(0, 10) }}</td>
         <td>{{ pitch.pitchNum }}</td>
@@ -91,10 +97,17 @@ export default {
       type: Array,
       default: () => [],
     },
+    selectedPitch: String(),
   },
   components: {},
+  watch: {
+    selectedPitch: function (newValue, oldValue) {
+      this.hoveredPitch = newValue;
+    },
+  },
   data() {
     return {
+      hoveredPitch: "",
       pitchesData: this.pitches,
       selectedSortingMetric: "gameDate",
       invertSort: false,
@@ -105,16 +118,21 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    hovered: function () {
+      return this.hoveredPitch;
+    },
+  },
   methods: {
-    pitchId: function (pitch) {
-      return (
-        pitch.gameId.toString() +
-        "_" +
-        pitch.pitcherId.toString() +
-        "_" +
-        pitch.pitchNum.toString()
-      );
+    hoverRow: function (pitch) {
+      this.hoveredPitch = pitch.pitchId;
+      pitch.isSelected = true;
+      this.$emit("hovered-pitch", this.hoveredPitch);
+    },
+    stopHoverRow: function (pitch) {
+      this.hoveredPitch = "";
+
+      this.$emit("stop-hovered-pitch", pitch !== null ? pitch.pitchId : "");
     },
     coordinates: function (pitch) {
       return (

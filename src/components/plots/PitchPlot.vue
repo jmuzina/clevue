@@ -1,14 +1,8 @@
 <template>
-  <div :style="{ width: width }" ref="container" class="pitch-plot-container">
-    <div
-      class="pitch-plot"
-      :style="{
-        width: width,
-      }"
-    >
+  <div ref="container" class="pitch-plot-container">
+    <div class="pitch-plot">
       <svg
         style="display: block"
-        :width="width"
         :viewBox="
           coordSystem.minX +
           ' ' +
@@ -36,7 +30,11 @@
             ]"
             :cx="p.x"
             :cy="scaleY(p.y)"
-            :r="isStrike(p) ? p.radius : p.radius / 2"
+            :r="
+              p.radius *
+              (p.pitchId === hoveredPitch ? 2 : 1) *
+              (p.inStrikeZone ? 1 : 0.8)
+            "
             :fill="p.fill"
             :fill-opacity="p.isSelected ? 1 : p.fillOpacity"
             :stroke="p.isSelected ? p.selectedStroke : p.stroke"
@@ -44,6 +42,8 @@
               p.isSelected ? p.selectedStrokeOpacity : p.strokeOpacity
             "
             :stroke-width="p.isSelected ? p.selectedStrokeWidth : p.strokeWidth"
+            v-on:mouseover="hoverPitch(p)"
+            v-on:mouseleave="stopHoverPitch(p)"
           />
         </template>
         <rect
@@ -54,6 +54,7 @@
           stroke="#000000"
           :stroke-width="0.02"
           fill-opacity="0"
+          style="pointer-events: none"
         ></rect>
 
         <rect
@@ -64,6 +65,7 @@
           stroke="#000000"
           :stroke-width="0.04"
           fill-opacity="0"
+          style="pointer-events: none"
         ></rect>
       </svg>
     </div>
@@ -106,6 +108,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    selectedPitch: String(),
   },
 
   data() {
@@ -123,6 +126,7 @@ export default {
     return {
       height: null,
       svg: null,
+      hoveredPitch: "",
 
       coordSystem,
       strikezoneCoords: {
@@ -135,13 +139,29 @@ export default {
   },
   computed: {
     selectableItems() {
-      return this.pitches.filter((p) => p.isSelectable);
+      return Object.entries(this.pitches).filter((p) => p.isSelectable);
+    },
+  },
+  watch: {
+    selectedPitch: function (newValue, oldValue) {
+      this.hoveredPitch = newValue;
     },
   },
   methods: {
+    hoverPitch: function (pitch) {
+      this.hoveredPitch = pitch.pitchId;
+      pitch.isSelected = true;
+      this.$emit("hovered-pitch", this.hoveredPitch);
+    },
+    stopHoverPitch: function (pitch) {
+      this.hoveredPitch = "";
+      pitch.isSelected = false;
+      this.$emit("stop-hovered-pitch", pitch.pitchId);
+    },
     scaleY(v) {
       return this.coordSystem.maxY - v + this.coordSystem.minY;
     },
+    /*
     isStrike(pitch) {
       const lowerBoundX = this.strikezoneCoords.x;
       const upperBoundX = this.strikezoneCoords.x + this.strikezoneCoords.width;
@@ -156,6 +176,7 @@ export default {
 
       return true;
     },
+    */
   },
 };
 </script>
