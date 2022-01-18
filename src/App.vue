@@ -161,12 +161,10 @@ export default {
 
             if (pitchTypesList[pitch.pitchName] == null)
               pitchTypesList[pitch.pitchName] = [];
-            //pitchTypesList[pitch.pitchName] = {};
 
             pitchTypesList[pitch.pitchName].push(pitch);
-            //pitchTypesList[pitch.pitchName][pitch.pitchId] = pitch;
-            //this.playerPitchData[pid]["All Pitches"][pitch.pitchId] = pitch;
             this.playerPitchData[pid]["All Pitches"].push(pitch);
+            this.selectedPlayerData.pitchData[k] = pitch;
           }
 
           let pitchKeys = Object.entries(pitchTypesList);

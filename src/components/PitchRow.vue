@@ -52,6 +52,11 @@ export default {
       selectedPitch: "",
     };
   },
+  watch: {
+    pitches: function (newV, oldV) {
+      this.pitchData = newV;
+    },
+  },
   computed: {
     currentHoveredPitch: function () {
       return this.hoveredPitch;

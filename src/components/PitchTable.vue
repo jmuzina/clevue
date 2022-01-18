@@ -80,7 +80,7 @@
         <td>{{ pitch.pitchType }}</td>
         <td>{{ pitch.balls }}</td>
         <td>{{ pitch.strikes }}</td>
-        <td>{{ pitch.velo.toFixed(1) }}</td>
+        <td>{{ (pitch.velo !== null ? pitch.velo : 0).toFixed(1) }}</td>
         <td>{{ pitch.x.toFixed(1) }}</td>
         <td>{{ pitch.y.toFixed(1) }}</td>
         <td>{{ pitch.cut != null ? pitch.cut.toFixed(1) : "0" }}</td>
@@ -110,6 +110,9 @@ export default {
   },
   components: {},
   watch: {
+    pitches: function (newValue, oldValue) {
+      this.pitchesData = newValue;
+    },
     previewPitch: function (newValue, oldValue) {
       //console.log("tbl receive hover change from ", oldValue, "to", newValue);
       this.previewedPitch = newValue;
