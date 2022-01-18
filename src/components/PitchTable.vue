@@ -129,7 +129,7 @@ export default {
 
         selectedRow.scrollIntoView({
           behavior: "smooth",
-          block: "nearest",
+          block: "center",
           inline: "nearest",
         });
       });
