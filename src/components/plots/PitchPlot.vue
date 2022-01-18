@@ -32,7 +32,8 @@
             :cy="scaleY(p.y)"
             :r="
               p.radius *
-              (p.pitchId === hoveredPitch ? 2 : 1) *
+              (p.pitchId === previewedPitch ? 1.8 : 1) *
+              (p.pitchId === selectedPitch ? 2.6 : 1) *
               (p.inStrikeZone ? 1 : 0.8)
             "
             :fill="p.fill"
@@ -42,8 +43,9 @@
               p.isSelected ? p.selectedStrokeOpacity : p.strokeOpacity
             "
             :stroke-width="p.isSelected ? p.selectedStrokeWidth : p.strokeWidth"
-            v-on:mouseover="hoverPitch(p)"
+            v-on:mouseover="startHoverPitch(p)"
             v-on:mouseleave="stopHoverPitch(p)"
+            v-on:click.prevent="clickPitch(p)"
           />
         </template>
         <rect
@@ -108,7 +110,8 @@ export default {
       type: Array,
       default: () => [],
     },
-    selectedPitch: String(),
+    selectPitch: String(),
+    previewPitch: String(),
   },
 
   data() {
@@ -126,7 +129,8 @@ export default {
     return {
       height: null,
       svg: null,
-      hoveredPitch: "",
+      previewedPitch: "",
+      selectedPitch: "",
 
       coordSystem,
       strikezoneCoords: {
@@ -143,18 +147,31 @@ export default {
     },
   },
   watch: {
-    selectedPitch: function (newValue, oldValue) {
-      this.hoveredPitch = newValue;
+    previewPitch: function (newValue, oldValue) {
+      //console.log("plot receive hover change from ", oldValue, "to", newValue);
+      this.previewedPitch = newValue;
+    },
+    selectPitch: function (newValue, oldValue) {
+      //console.log("plot receive select change from ", oldValue, "to", newValue);
+      this.selectedPitch = newValue;
     },
   },
   methods: {
-    hoverPitch: function (pitch) {
-      this.hoveredPitch = pitch.pitchId;
+    clickPitch: function (pitch) {
+      //console.log("plot select " + pitch.pitchId);
+      this.selectedPitch = pitch.pitchId;
       pitch.isSelected = true;
-      this.$emit("hovered-pitch", this.hoveredPitch);
+      this.$emit("clicked-pitch", this.selectedPitch);
+    },
+    startHoverPitch: function (pitch) {
+      //console.log("plot start hover " + pitch.pitchId);
+      this.previewedPitch = pitch.pitchId;
+      pitch.isSelected = true;
+      this.$emit("start-hovered-pitch", this.previewedPitch);
     },
     stopHoverPitch: function (pitch) {
-      this.hoveredPitch = "";
+      //console.log("plot stop hover " + pitch.pitchId);
+      this.previewedPitch = "";
       pitch.isSelected = false;
       this.$emit("stop-hovered-pitch", pitch.pitchId);
     },

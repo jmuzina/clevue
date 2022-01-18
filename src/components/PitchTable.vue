@@ -1,7 +1,7 @@
 <template>
   <table
     class="table table-striped table-bordered table-sm table-hover"
-    v-on:mouseleave="stopHoverRow(hoveredPitch)"
+    v-on:mouseleave="stopHoverRow(previewedPitch)"
   >
     <thead>
       <tr>
@@ -61,7 +61,7 @@
         />
       </tr>
     </thead>
-    <tbody>
+    <tbody class="scrollablePitchDataTable">
       <tr
         v-for="(pitch, index) in pitchesData"
         v-bind:item="pitch"
@@ -69,7 +69,11 @@
         v-bind:key="pitch.pitchId"
         v-on:mouseover="hoverRow(pitch)"
         v-on:mouseleave="stopHoverRow(pitch)"
-        :class="{ 'pitch-row-hover': pitch.pitchId === hoveredPitch }"
+        v-on:click.prevent="clickRow(pitch)"
+        :class="{
+          'pitch-row-select': pitch.pitchId === selectedPitch,
+          'pitch-row-hover': pitch.pitchId === previewedPitch,
+        }"
       >
         <td>{{ pitch.gameDate.toString().substring(0, 10) }}</td>
         <td>{{ pitch.pitchNum }}</td>
@@ -84,7 +88,11 @@
         <td>{{ boolToStr(pitch.swing) }}</td>
         <td>{{ boolToStr(pitch.miss) }}</td>
         <td>{{ boolToStr(pitch.inStrikeZone) }}</td>
-        <td>{{ pitch.batterShortName }}</td>
+        <td>
+          {{
+            pitch.batterShortName.substring(0, pitch.batterShortName.length - 1)
+          }}
+        </td>
         <td>{{ pitch.result }}</td>
       </tr>
     </tbody>
@@ -97,17 +105,40 @@ export default {
       type: Array,
       default: () => [],
     },
-    selectedPitch: String(),
+    previewPitch: String(),
+    selectPitch: String(),
   },
   components: {},
   watch: {
-    selectedPitch: function (newValue, oldValue) {
-      this.hoveredPitch = newValue;
+    previewPitch: function (newValue, oldValue) {
+      //console.log("tbl receive hover change from ", oldValue, "to", newValue);
+      this.previewedPitch = newValue;
+    },
+    selectPitch: function (newValue, oldValue) {
+      //console.log("tbl receive select change from ", oldValue, "to", newValue);
+      this.selectedPitch = newValue;
+
+      //console.log(
+      //this.$el.querySelector("tbody").querySelector(".pitch-row-select")
+      //);
+
+      this.$nextTick(() => {
+        var table = this.$el;
+        var tableBody = table.querySelector("tbody");
+        var selectedRow = tableBody.querySelector(".pitch-row-select");
+
+        selectedRow.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "nearest",
+        });
+      });
     },
   },
   data() {
     return {
-      hoveredPitch: "",
+      previewedPitch: "",
+      selectedPitch: "",
       pitchesData: this.pitches,
       selectedSortingMetric: "gameDate",
       invertSort: false,
@@ -120,17 +151,25 @@ export default {
   },
   computed: {
     hovered: function () {
-      return this.hoveredPitch;
+      return this.previewedPitch;
     },
   },
   methods: {
+    clickRow: function (pitch) {
+      //console.log("tbl select " + pitch.pitchId);
+      this.selectedPitch = pitch.pitchId;
+      //pitch.isSelected = true;
+      this.$emit("clicked-pitch", this.selectedPitch);
+    },
     hoverRow: function (pitch) {
-      this.hoveredPitch = pitch.pitchId;
-      pitch.isSelected = true;
-      this.$emit("hovered-pitch", this.hoveredPitch);
+      //console.log("tbl start hover " + pitch.pitchId);
+      this.previewedPitch = pitch.pitchId;
+      //pitch.isSelected = true;
+      this.$emit("start-hovered-pitch", this.previewedPitch);
     },
     stopHoverRow: function (pitch) {
-      this.hoveredPitch = "";
+      //console.log("tbl stop hover " + pitch.pitchId);
+      this.previewedPitch = "";
 
       this.$emit("stop-hovered-pitch", pitch !== null ? pitch.pitchId : "");
     },

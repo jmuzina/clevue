@@ -3,19 +3,23 @@
     <div class="pitchPlotContainer col-lg-4">
       <Panel :title="title">
         <PitchPlot
-          v-on:hovered-pitch="hoveredPitch($event)"
+          v-on:start-hovered-pitch="startHoveredPitch($event)"
           v-on:stop-hovered-pitch="stopHoveredPitch($event)"
+          v-on:clicked-pitch="selectPitch($event)"
           :pitches="pitchData"
-          :selectedPitch="currentSelectedPitch"
+          :previewPitch="currentHoveredPitch"
+          :selectPitch="currentSelectedPitch"
         />
       </Panel>
     </div>
     <div class="pitchTableContainer col-lg-8">
       <PitchTable
-        v-on:hovered-pitch="hoveredPitch($event)"
+        v-on:start-hovered-pitch="startHoveredPitch($event)"
         v-on:stop-hovered-pitch="stopHoveredPitch($event)"
+        v-on:clicked-pitch="selectPitch($event)"
         :pitches="pitchData"
-        :selectedPitch="currentSelectedPitch"
+        :previewPitch="currentHoveredPitch"
+        :selectPitch="currentSelectedPitch"
       />
     </div>
   </div>
@@ -44,20 +48,30 @@ export default {
   data() {
     return {
       pitchData: this.pitches,
+      hoveredPitch: "",
       selectedPitch: "",
     };
   },
   computed: {
+    currentHoveredPitch: function () {
+      return this.hoveredPitch;
+    },
     currentSelectedPitch: function () {
       return this.selectedPitch;
     },
   },
   methods: {
-    hoveredPitch: function (pitchId) {
-      this.selectedPitch = pitchId;
+    startHoveredPitch: function (pitchId) {
+      //console.log("row start hover " + pitchId);
+      this.hoveredPitch = pitchId;
     },
     stopHoveredPitch: function (pitchId) {
-      this.selectedPitch = "";
+      //console.log("row stop hover " + pitchId);
+      this.hoveredPitch = "";
+    },
+    selectPitch: function (pitchId) {
+      //console.log("row select " + pitchId);
+      this.selectedPitch = pitchId;
     },
   },
 };
