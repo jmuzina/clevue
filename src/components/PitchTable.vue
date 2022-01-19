@@ -184,23 +184,12 @@ export default {
       // The lowest scroll amount that would make the selected row visible
       const visibleTableLowerBound = row.offsetTop;
 
-      console.log("rows visible: " + numRowsVisible);
-      console.log("visible height: " + visibleTableHeight);
-      console.log("row height: " + row.offsetTop);
-      console.log("current pos: " + container.scrollTop);
-      console.log("upper bound: " + visibleTableUpperBound);
-      console.log("lower bound: " + visibleTableLowerBound);
-      //const factor = this.displayWidth >= 992 ? 0.5 : 25;
-      const factor = 0.5;
-      const newy = Math.max(0, row.offsetTop - visibleTableHeight * factor);
-      console.log("target pos: " + newy);
-
       // Scroll the row into view if it is not currently visible
       if (
         container.scrollTop < visibleTableUpperBound ||
         container.scrollTop > visibleTableLowerBound
       ) {
-        container.scrollTop = newy;
+        container.scrollTop = Math.max(0, row.offsetTop - visibleTableHeight * 0.5);
       }
     },
   },
