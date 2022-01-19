@@ -151,6 +151,7 @@ $highlight-green: rgba(35, 233, 45, 0.8) 0 0 10px;
   overflow: auto;
   display: block;
   direction: ltr;
+  scroll-behavior: smooth;
 }
 
 .pitchTableContainer table{
@@ -168,7 +169,7 @@ $highlight-green: rgba(35, 233, 45, 0.8) 0 0 10px;
   font-size: 12px;
 }
 
-.pitch-row-hover {
+.pitchTableContainer table tr:hover:not(.pitch-row-select), .pitch-row-hover  {
   box-shadow: $highlight-green !important;
   cursor: default;
 }
@@ -212,12 +213,9 @@ circle {
   .pitchTableContainer {
     max-height: 30vh;
     overflow: auto;
-    direction: ltr;
     margin: 10px 0px 10px 0px;
   }
   .pitchTableContainer table{
-    position: auto;
-    top: 0;
     width: 100%;
   }
   .pitchTableContainer table tr th {
@@ -226,8 +224,5 @@ circle {
   
   .pitchTableContainer table tr td {
     font-size: 9px;
-  }
-  .pitch-row-hover {
-    box-shadow: none !important;
   }
 }

@@ -27,7 +27,8 @@
         v-on:clicked-pitch="selectPitch($event)"
         :pitches="pitchData"
         :previewPitch="currentHoveredPitch"
-        :selectPitch="currentSelectedPitch"
+        :selectedPitch="selectedPitch"
+        :displayWidth="displayWidth"
       />
     </div>
   </div>
@@ -47,6 +48,8 @@ export default {
       type: String,
       default: () => "All Pitches",
     },
+    selectedPitch: String(),
+    displayWidth: Number(),
   },
 
   components: {
@@ -65,6 +68,7 @@ export default {
     currentHoveredPitch: function () {
       return this.hoveredPitch;
     },
+
     currentSelectedPitch: function () {
       return this.selectedPitch;
     },
@@ -74,7 +78,6 @@ export default {
     return {
       pitchData: this.pitches,
       hoveredPitch: "",
-      selectedPitch: "",
     };
   },
 
@@ -87,7 +90,7 @@ export default {
       this.hoveredPitch = "";
     },
     selectPitch: function (pitchId) {
-      this.selectedPitch = pitchId;
+      this.$emit("clicked-pitch", pitchId);
     },
   },
 };

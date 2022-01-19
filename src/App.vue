@@ -29,7 +29,7 @@
       </div>
 
       <!--Display pitch information in a second column on large displays-->
-      <div v-if="windowWidth > 992" class="pitchData col-lg-9">
+      <div v-if="displayWidth > 992" class="pitchData col-lg-9">
         <p v-if="pitchTypes.length == 0" class="select-player-hint">
           Please select a player!
         </p>
@@ -39,8 +39,11 @@
             selectedPlayerData.playerId
           ]"
           v-bind:key="pitchType"
+          v-on:clicked-pitch="pitch_selected($event)"
+          :selectedPitch="currentSelectedPitch"
           :title="getPitchTitle(pitchType)"
           :pitches="pitches"
+          :displayWidth="displayWidth"
         />
       </div>
       <!--Display pitch information in a pop-up modal on smaller displays-->
@@ -76,8 +79,11 @@
                     selectedPlayerData.playerId
                   ]"
                   v-bind:key="pitchType"
+                  v-on:clicked-pitch="pitch_selected($event)"
+                  :selectedPitch="currentSelectedPitch"
                   :title="getPitchTitle(pitchType)"
                   :pitches="pitches"
+                  :displayWidth="displayWidth"
                 />
               </div>
               <div class="modal-footer">
@@ -119,7 +125,7 @@ export default {
   },
   mounted() {
     window.onresize = () => {
-      this.windowWidth = window.innerWidth;
+      this.displayWidth = window.innerWidth;
     };
   },
   data() {
@@ -128,8 +134,9 @@ export default {
       gotPlayerRoster: false,
       playerPitchData: {},
       selectedPlayerData: {},
+      currentSelectedPitch: "",
       sortKey: "fullName",
-      windowWidth: window.innerWidth,
+      displayWidth: window.innerWidth,
 
       pitchTypes: [],
 
@@ -167,6 +174,9 @@ export default {
       return this.selectedPlayerData.pitchData.filter(function (pitch) {
         return pitch.pitchType === filterPitch;
       });
+    },
+    getSelectedPitch() {
+      return this.currentSelectedPitch;
     },
     // Sort all players by a given metric
     sortPlayers(k) {
@@ -268,6 +278,9 @@ export default {
     },
     player_deselected: function () {
       this.selectedPlayerData = {};
+    },
+    pitch_selected: function (pitchId) {
+      this.currentSelectedPitch = pitchId;
     },
   },
 };

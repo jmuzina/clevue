@@ -11,7 +11,7 @@
 
 <template>
   <table
-    class="table table-striped table-bordered table-sm table-hover"
+    class="table table-striped table-bordered table-sm"
     v-on:mouseleave="stopHoverRow(previewedPitch)"
   >
     <thead>
@@ -69,7 +69,8 @@ export default {
       default: () => [],
     },
     previewPitch: String(),
-    selectPitch: String(),
+    selectedPitch: String(),
+    displayWidth: Number(),
   },
 
   watch: {
@@ -79,22 +80,20 @@ export default {
     previewPitch: function (newValue, oldValue) {
       this.previewedPitch = newValue;
     },
-    selectPitch: function (newValue, oldValue) {
-      this.selectedPitch = newValue;
+    selectedPitch: function (newValue, oldValue) {
+      //this.selectedPitch = newValue;
+      if (newValue !== "") {
+        // Find the selected table row and scroll it into view.
+        // This must be done on the next tick, after the selected class has been applied.
+        this.$nextTick(() => {
+          const selectedRow = this.$el
+            .querySelector("tbody")
+            .querySelector(".pitch-row-select");
 
-      // Find the selected table row and scroll it into view.
-      // This must be done on the next tick, after the selected class has been applied.
-      this.$nextTick(() => {
-        var table = this.$el;
-        var tableBody = table.querySelector("tbody");
-        var selectedRow = tableBody.querySelector(".pitch-row-select");
-
-        selectedRow.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "nearest",
+          // Scroll the selected row into view if it exists in this table
+          if (selectedRow) this.scrollRowIntoView(selectedRow);
         });
-      });
+      }
     },
   },
 
@@ -107,7 +106,6 @@ export default {
   data() {
     return {
       previewedPitch: "",
-      selectedPitch: "",
       pitchesData: this.pitches,
       invertSort: false,
 
@@ -137,8 +135,7 @@ export default {
 
   methods: {
     clickRow: function (pitch) {
-      this.selectedPitch = pitch.pitchId;
-      this.$emit("clicked-pitch", this.selectedPitch);
+      this.$emit("clicked-pitch", pitch.pitchId);
     },
     hoverRow: function (pitch) {
       this.previewedPitch = pitch.pitchId;
@@ -167,6 +164,44 @@ export default {
       if (metric === this.selectedSortingMetric) {
         return "&#" + (this.invertSort ? "8593" : "8595") + ";";
       } else return "";
+    },
+    scrollRowIntoView: function (row) {
+      const tableBody = row.parentNode;
+      const table = tableBody.parentNode;
+      var container = table.parentNode;
+      const numRowsVisible = Math.floor(
+        container.offsetHeight / row.scrollHeight - 1
+      );
+
+      // Total height of the visible portion of the table
+      const visibleTableHeight = row.scrollHeight * numRowsVisible;
+
+      // The highest scroll amount that would make the selected row visible
+      const visibleTableUpperBound = Math.max(
+        row.offsetTop - visibleTableHeight + row.scrollHeight,
+        0
+      );
+      // The lowest scroll amount that would make the selected row visible
+      const visibleTableLowerBound = row.offsetTop;
+
+      console.log("rows visible: " + numRowsVisible);
+      console.log("visible height: " + visibleTableHeight);
+      console.log("row height: " + row.offsetTop);
+      console.log("current pos: " + container.scrollTop);
+      console.log("upper bound: " + visibleTableUpperBound);
+      console.log("lower bound: " + visibleTableLowerBound);
+      //const factor = this.displayWidth >= 992 ? 0.5 : 25;
+      const factor = 0.5;
+      const newy = Math.max(0, row.offsetTop - visibleTableHeight * factor);
+      console.log("target pos: " + newy);
+
+      // Scroll the row into view if it is not currently visible
+      if (
+        container.scrollTop < visibleTableUpperBound ||
+        container.scrollTop > visibleTableLowerBound
+      ) {
+        container.scrollTop = newy;
+      }
     },
   },
 };
