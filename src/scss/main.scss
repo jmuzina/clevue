@@ -16,9 +16,14 @@ $playerBioDataFontSize_base: 15px;
 $playerBioDataFontSize_mobile: 14px;
 $playerBioDataLineHeight_base: 1.5;
 $playerBioDataLineHeight_mobile: 1.3;
+$highlight-blue: rgba(52, 75, 107,0.7) 0 0 7px;
+$highlight-gold: rgba(241, 241, 6, 0.8) 0 0 10px;
+$highlight-teal: #1faff1 0 0 19px;
+$highlight-green: rgba(35, 233, 45, 0.8) 0 0 10px;
 
 #app {
-  margin: 10px 0px 0px 0px;
+  margin: 5px 0px 5px 0px;
+  padding: 1px 0px 2px 0px;
 }
 
 .main-row {
@@ -52,20 +57,20 @@ $playerBioDataLineHeight_mobile: 1.3;
 }
 
 .player-card {
-  box-shadow: rgba(52, 75, 107,0.7) 0 0 7px;
+  box-shadow: $highlight-blue;
   background-color: gray;
   min-width:20vw;
   margin: 3px;
 }
 
 .player-card:hover:not(.selectedPlayer)  {
-	box-shadow: #1faff1 0 0 19px !important;
+	box-shadow: $highlight-teal !important;
   transform:scale(1.02);
   cursor: pointer;
 }
 
 .selectedPlayer {
-  box-shadow: rgba(241, 241, 6, 0.8) 0 0 10px !important;
+  box-shadow: $highlight-gold !important;
   transform:scale(1.02);
   cursor: default;
 }
@@ -164,12 +169,12 @@ $playerBioDataLineHeight_mobile: 1.3;
 }
 
 .pitch-row-hover {
-  box-shadow: rgba(35, 233, 45, 0.8) 0 0 10px !important;
+  box-shadow: $highlight-green !important;
   cursor: default;
 }
 
 .pitch-row-select {
-  box-shadow: rgba(241, 241, 6, 0.8) 0 0 10px !important;
+  box-shadow: $highlight-gold !important;
   cursor: default;
 }
 

@@ -1,3 +1,9 @@
+<!-- 
+  Player Banner component
+  Displays basic player information
+  Cleveland Guardians, modified by J. Muzina
+  01/18/2022
+-->
 <template>
   <div class="container-fluid">
     <div class="player-primary row">
@@ -37,6 +43,13 @@
 
 <script>
 export default {
+  props: {
+    playerInfo: {
+      type: Object,
+      default: null,
+    },
+  },
+
   computed: {
     imgUrl: function () {
       return (
@@ -46,13 +59,8 @@ export default {
       );
     },
   },
-  props: {
-    playerInfo: {
-      type: Object,
-      default: null,
-    },
-  },
   methods: {
+    // Given a decimal number of years, return a string estimation of time in the form 'x years, y months'
     timeStr(decimalTime) {
       const numYears = Math.floor(decimalTime);
       const numMonths = Math.floor((decimalTime % 1) * 12);

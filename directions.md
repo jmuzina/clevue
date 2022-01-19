@@ -20,7 +20,7 @@ When you are done, there is a form link in the initial email you recieved. Fill 
 
 Good luck!
 
-### PART I
+### PART I - COMPLETE
 
 We are building a pitcher assessment page. Another developer started this project but can't finish it, so we need you to take it over. There is a service that returns a list of pitchers and we need to be able to show a single pitcher's info on this page. There's already some general placeholder info and components created that you should use.
 
@@ -30,26 +30,19 @@ We also want to show pitch plots for all of the pitcher's pitches as well as ind
 
 **Endpoint documentation is at the end of this document**
 
-finishing touches needed:
-display strike percentage for each pitch type
-pretty styling.
-search functionality.
-various sorting types
-player list should scroll separately from the pitch plots, which are static
-
 ### PART II - COMPLETE
 
 Now that we have a pitcher assessment page, we need an intuitive way for users to load in other pitchers' data. The users will need access to all of the available pitchers.
 
 **We need you to design and build some intuitive way for users to select different pitchers to assess.**
 
-### PART III
+### PART III - COMPLETE
 
 Our pitching director told us that our coaches need a way to see each pitch's data individually. In the past, we put this kind of data into a table for easier readability. The coaches also want the ability to interact with a pitch on the plot to see it highlight on the table as well as the reverse; they want to be able to interact with a row in the table and see a highlight on the corresponding plotted pitch.
 
 **What we need you to do is create a table with all the pitcher's pitches and have it interact with the pitch plots.**
 
-### PART IV
+### PART IV - COMPLETE
 
 Up to this point, we provided you with the end points to get what you need. Now we would like to see how you would create an endpoint and how you would handle its events. Your endpoints should return the exact data as the provided ones.
 

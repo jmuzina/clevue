@@ -1,3 +1,14 @@
+<!-- 
+  Pitch Table Component 
+  Displays data for a given pitch type in tabular form.
+    Table rows are interactive. 
+      Hovering a row highlights it in the corresponding row plot while hovered.
+      Clicking a row highlights it in the corresponding row plot until another pitch is selected.
+      Hovers/clicks on the plot perform the same actions upon the table.
+  J. Muzina
+  01/18/2022
+-->
+
 <template>
   <table
     class="table table-striped table-bordered table-sm table-hover"
@@ -5,67 +16,19 @@
   >
     <thead>
       <tr>
+        <!--Create interactive column headers for each pitch metric-->
         <th
-          v-on:click="sort('gameDate')"
-          v-html="'Date ' + sortArrow('gameDate')"
-        />
-        <th
-          v-on:click.prevent="sort('pitchNum')"
-          v-html="'# ' + sortArrow('pitchNum')"
-        />
-        <th
-          v-on:click.prevent="sort('pitchType')"
-          v-html="'Pitch ' + sortArrow('pitchType')"
-        />
-        <th
-          v-on:click.prevent="sort('balls')"
-          v-html="'Balls ' + sortArrow('balls')"
-        />
-        <th
-          v-on:click.prevent="sort('strikes')"
-          v-html="'Strikes ' + sortArrow('strikes')"
-        />
-        <th
-          v-on:click.prevent="sort('velo')"
-          v-html="'MPH ' + sortArrow('velo')"
-        />
-        <th v-on:click.prevent="sort('x')" v-html="'X ' + sortArrow('x')" />
-        <th v-on:click.prevent="sort('y')" v-html="'Y ' + sortArrow('y')" />
-        <th
-          v-on:click.prevent="sort('cut')"
-          v-html="'Cut ' + sortArrow('cut')"
-        />
-        <th
-          v-on:click.prevent="sort('rise')"
-          v-html="'Rise ' + sortArrow('rise')"
-        />
-        <th
-          v-on:click.prevent="sort('swing')"
-          v-html="'Swung ' + sortArrow('swing')"
-        />
-        <th
-          v-on:click.prevent="sort('miss')"
-          v-html="'Missed ' + sortArrow('miss')"
-        />
-        <th
-          v-on:click.prevent="sort('inStrikeZone')"
-          v-html="'Strike ' + sortArrow('inStrikeZone')"
-        />
-        <th
-          v-on:click.prevent="sort('batterShortName')"
-          v-html="'Batter ' + sortArrow('batterShortName')"
-        />
-        <th
-          v-on:click.prevent="sort('result')"
-          v-html="'Result ' + sortArrow('result')"
-        />
+          v-for="(displayName, metric) in metricNames"
+          v-bind:key="metric"
+          v-html="displayName + sortArrow(metric)"
+          v-on:click="sort(metric)"
+        ></th>
       </tr>
     </thead>
     <tbody class="scrollablePitchDataTable">
+      <!--Add a table row for each pitch-->
       <tr
-        v-for="(pitch, index) in pitchesData"
-        v-bind:item="pitch"
-        v-bind:index="index"
+        v-for="pitch in pitchesData"
         v-bind:key="pitch.pitchId"
         v-on:mouseover="hoverRow(pitch)"
         v-on:mouseleave="stopHoverRow(pitch)"
@@ -108,23 +71,19 @@ export default {
     previewPitch: String(),
     selectPitch: String(),
   },
-  components: {},
+
   watch: {
     pitches: function (newValue, oldValue) {
       this.pitchesData = newValue;
     },
     previewPitch: function (newValue, oldValue) {
-      //console.log("tbl receive hover change from ", oldValue, "to", newValue);
       this.previewedPitch = newValue;
     },
     selectPitch: function (newValue, oldValue) {
-      //console.log("tbl receive select change from ", oldValue, "to", newValue);
       this.selectedPitch = newValue;
 
-      //console.log(
-      //this.$el.querySelector("tbody").querySelector(".pitch-row-select")
-      //);
-
+      // Find the selected table row and scroll it into view.
+      // This must be done on the next tick, after the selected class has been applied.
       this.$nextTick(() => {
         var table = this.$el;
         var tableBody = table.querySelector("tbody");
@@ -138,48 +97,56 @@ export default {
       });
     },
   },
-  data() {
-    return {
-      previewedPitch: "",
-      selectedPitch: "",
-      pitchesData: this.pitches,
-      selectedSortingMetric: "gameDate",
-      invertSort: false,
-      sortArrow: function (metric) {
-        if (metric === this.selectedSortingMetric) {
-          return "&#" + (this.invertSort ? "8593" : "8595") + ";";
-        } else return "";
-      },
-    };
-  },
+
   computed: {
     hovered: function () {
       return this.previewedPitch;
     },
   },
+
+  data() {
+    return {
+      previewedPitch: "",
+      selectedPitch: "",
+      pitchesData: this.pitches,
+      invertSort: false,
+
+      // The current metric used for sorting, defaults to game date
+      selectedSortingMetric: "gameDate",
+
+      // Pitch attributes to display in the table in form key: displayName
+      metricNames: {
+        gameDate: "Date",
+        pitchNum: "#",
+        pitchType: "Pitch",
+        balls: "Balls",
+        strikes: "Strikes",
+        velo: "MPH",
+        x: "X",
+        y: "Y",
+        cut: "Cut",
+        rise: "Rise",
+        swing: "Swung",
+        miss: "Missed",
+        inStrikeZone: "Strike",
+        batterShortName: "Batter",
+        result: "Result",
+      },
+    };
+  },
+
   methods: {
     clickRow: function (pitch) {
-      //console.log("tbl select " + pitch.pitchId);
       this.selectedPitch = pitch.pitchId;
-      //pitch.isSelected = true;
       this.$emit("clicked-pitch", this.selectedPitch);
     },
     hoverRow: function (pitch) {
-      //console.log("tbl start hover " + pitch.pitchId);
       this.previewedPitch = pitch.pitchId;
-      //pitch.isSelected = true;
       this.$emit("start-hovered-pitch", this.previewedPitch);
     },
     stopHoverRow: function (pitch) {
-      //console.log("tbl stop hover " + pitch.pitchId);
       this.previewedPitch = "";
-
       this.$emit("stop-hovered-pitch", pitch !== null ? pitch.pitchId : "");
-    },
-    coordinates: function (pitch) {
-      return (
-        pitch.x.toFixed(2).toString() + ", " + pitch.y.toFixed(2).toString()
-      );
     },
     boolToStr: function (bool) {
       return bool ? "Y" : "N";
@@ -194,6 +161,12 @@ export default {
         if (!inverted) return a[metric] >= b[metric];
         else return a[metric] < b[metric];
       });
+    },
+    // Get a unicode arrow to indicate sorting direction
+    sortArrow: function (metric) {
+      if (metric === this.selectedSortingMetric) {
+        return "&#" + (this.invertSort ? "8593" : "8595") + ";";
+      } else return "";
     },
   },
 };

@@ -1,3 +1,10 @@
+<!-- 
+  Player card component
+  Container for basic information about a player, allows the player to be selected
+  Cleveland Guardians, modified by J. Muzina
+  01/18/2022
+-->
+
 <template>
   <div
     v-if="got_players == true"
@@ -13,9 +20,22 @@
 import PlayerBanner from "./PlayerBanner.vue";
 export default {
   props: ["playerId"],
+
   components: {
     PlayerBanner,
   },
+
+  computed: {
+    // Add a highlight class to a player card element if it is selected
+    get_card_class_str: function () {
+      let result = "player-card";
+      if (this.$parent.selectedPlayerData.playerId === this.playerId)
+        result += " selectedPlayer";
+
+      return result;
+    },
+  },
+
   data() {
     return {
       playersData: this.callAPI("players"),
@@ -28,27 +48,17 @@ export default {
       },
     };
   },
-  computed: {
-    get_card_class_str: function () {
-      let result = "player-card";
-      if (this.$parent.selectedPlayerData.playerId === this.playerId)
-        result += " selectedPlayer";
 
-      return result;
-    },
-  },
   methods: {
+    // Query a specified API endpoint for a player's data
     callAPI(callType) {
       this["got_" + callType] = false;
-      fetch(
-        "https://cle-fe-challenge-services.vercel.app/api/" +
-          callType +
-          "?playerId=" +
-          this.playerId,
-        {
-          method: "GET",
-        }
-      )
+
+      let url = "https://cle-be-challenge-1.vercel.app/api"; // custom endpoint
+      // let url = "https://cle-fe-challenge-services.vercel.app/api" // provided endpoint
+      fetch(url + "?calltype=" + callType + "&pid=" + this.playerId, {
+        method: "GET",
+      })
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -64,10 +74,6 @@ export default {
         });
     },
     select_player(event) {
-      const obj = {
-        playerId: this.playerId,
-        pitchData: this.pitchesData,
-      };
       this.$emit("player-selected", {
         playerId: this.playerId,
         pitchData: this.pitchesData,

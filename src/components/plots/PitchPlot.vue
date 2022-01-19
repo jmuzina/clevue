@@ -1,3 +1,14 @@
+<!-- 
+  Pitch Plot Component 
+  Displays pitches of a given type graphically, on top of a strike zone.
+    Plotted pitches are interactive. 
+      Hovering a pitch highlights it in the corresponding table row while hovered.
+      Clicking a pitch highlights it in the corresponding table until another pitch is selected.
+      Hovers/clicks on table rows perform the same actions upon the plot.
+  Cleveland Guardians, modified by J. Muzina
+  01/18/2022
+-->
+
 <template>
   <div ref="container" class="pitch-plot-container">
     <div class="pitch-plot">
@@ -19,6 +30,7 @@
         @mousedown="mousedownFunc($event)"
         @mousemove="mousemoveFunc($event)"
       >
+        <!--Plot all pitches. Hovered and selected pitches are made larger for emphasis.-->
         <template v-for="(p, i) in pitches">
           <circle
             :key="'pitch-' + i"
@@ -95,12 +107,12 @@ Example pitches
 // 			isVisible: true, -- REQUIRED
 // 		},
 // ]
-
  */
 import { selectableMixin } from "../../utility/selectable";
 
 export default {
   mixins: [selectableMixin],
+
   props: {
     backgroundColor: {
       default: "#DFDFDF",
@@ -112,6 +124,21 @@ export default {
     },
     selectPitch: String(),
     previewPitch: String(),
+  },
+
+  watch: {
+    previewPitch: function (newValue, oldValue) {
+      this.previewedPitch = newValue;
+    },
+    selectPitch: function (newValue, oldValue) {
+      this.selectedPitch = newValue;
+    },
+  },
+
+  computed: {
+    selectableItems() {
+      return Object.entries(this.pitches).filter((p) => p.isSelectable);
+    },
   },
 
   data() {
@@ -141,36 +168,18 @@ export default {
       },
     };
   },
-  computed: {
-    selectableItems() {
-      return Object.entries(this.pitches).filter((p) => p.isSelectable);
-    },
-  },
-  watch: {
-    previewPitch: function (newValue, oldValue) {
-      //console.log("plot receive hover change from ", oldValue, "to", newValue);
-      this.previewedPitch = newValue;
-    },
-    selectPitch: function (newValue, oldValue) {
-      //console.log("plot receive select change from ", oldValue, "to", newValue);
-      this.selectedPitch = newValue;
-    },
-  },
   methods: {
     clickPitch: function (pitch) {
-      //console.log("plot select " + pitch.pitchId);
       this.selectedPitch = pitch.pitchId;
       pitch.isSelected = true;
       this.$emit("clicked-pitch", this.selectedPitch);
     },
     startHoverPitch: function (pitch) {
-      //console.log("plot start hover " + pitch.pitchId);
       this.previewedPitch = pitch.pitchId;
       pitch.isSelected = true;
       this.$emit("start-hovered-pitch", this.previewedPitch);
     },
     stopHoverPitch: function (pitch) {
-      //console.log("plot stop hover " + pitch.pitchId);
       this.previewedPitch = "";
       pitch.isSelected = false;
       this.$emit("stop-hovered-pitch", pitch.pitchId);
@@ -178,22 +187,6 @@ export default {
     scaleY(v) {
       return this.coordSystem.maxY - v + this.coordSystem.minY;
     },
-    /*
-    isStrike(pitch) {
-      const lowerBoundX = this.strikezoneCoords.x;
-      const upperBoundX = this.strikezoneCoords.x + this.strikezoneCoords.width;
-      const lowerBoundY = this.strikezoneCoords.y * 0.5;
-      const upperBoundY =
-        (this.strikezoneCoords.y + this.strikezoneCoords.height) * 0.67;
-
-      if (pitch.x >= upperBoundX) return false;
-      if (pitch.x <= lowerBoundX) return false;
-      if (pitch.y >= upperBoundY) return false;
-      if (pitch.y <= lowerBoundY) return false;
-
-      return true;
-    },
-    */
   },
 };
 </script>

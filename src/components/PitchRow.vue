@@ -1,3 +1,11 @@
+<!-- 
+  Pitch Row Component 
+  Contains a pitch plot and data table for a given pitch type, arranged in a row.
+    Receives pitch hovers and selections from the pitch plot and data table, and forwards them to the other component.
+  J. Muzina
+  01/18/2022
+-->
+
 <template>
   <div class="row">
     <div class="pitchPlotContainer col-lg-4">
@@ -40,23 +48,19 @@ export default {
       default: () => "All Pitches",
     },
   },
+
   components: {
     Panel,
     PitchPlot,
     PitchTable,
   },
-  data() {
-    return {
-      pitchData: this.pitches,
-      hoveredPitch: "",
-      selectedPitch: "",
-    };
-  },
+
   watch: {
     pitches: function (newV, oldV) {
       this.pitchData = newV;
     },
   },
+
   computed: {
     currentHoveredPitch: function () {
       return this.hoveredPitch;
@@ -65,17 +69,24 @@ export default {
       return this.selectedPitch;
     },
   },
+
+  data() {
+    return {
+      pitchData: this.pitches,
+      hoveredPitch: "",
+      selectedPitch: "",
+    };
+  },
+
+  // Forward pitch hovers/clicks from the interacted component to the opposite component.
   methods: {
     startHoveredPitch: function (pitchId) {
-      //console.log("row start hover " + pitchId);
       this.hoveredPitch = pitchId;
     },
     stopHoveredPitch: function (pitchId) {
-      //console.log("row stop hover " + pitchId);
       this.hoveredPitch = "";
     },
     selectPitch: function (pitchId) {
-      //console.log("row select " + pitchId);
       this.selectedPitch = pitchId;
     },
   },
