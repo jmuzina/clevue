@@ -40,7 +40,7 @@ export default {
 <style scoped lang="scss">
 @import "../../scss/_variables.scss";
 .panel {
-  display: inline-flex;
+  display: block;
   flex-direction: column;
   border: 1px solid $black;
   border-radius: $rounded;

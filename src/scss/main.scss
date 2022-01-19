@@ -136,6 +136,10 @@ $highlight-green: rgba(35, 233, 45, 0.8) 0 0 10px;
   margin: 0px 0px 20px 0px;
 }
 
+#pitchDataModal .modal-content {
+  max-width: 65vw;
+}
+
 .pitchPlots {
   display: flex;
   flex-flow: column nowrap;
@@ -224,5 +228,9 @@ circle {
   
   .pitchTableContainer table tr td {
     font-size: 9px;
+  }
+
+  #pitchDataModal .modal-content {
+    max-width: 100%;
   }
 }

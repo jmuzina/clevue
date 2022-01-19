@@ -189,7 +189,10 @@ export default {
         container.scrollTop < visibleTableUpperBound ||
         container.scrollTop > visibleTableLowerBound
       ) {
-        container.scrollTop = Math.max(0, row.offsetTop - visibleTableHeight * 0.5);
+        container.scrollTop = Math.max(
+          0,
+          row.offsetTop - visibleTableHeight * 0.5
+        );
       }
     },
   },
